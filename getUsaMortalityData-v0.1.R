@@ -1,3 +1,14 @@
+##########
+##########
+##Testing GitHub Fork of tool to download and import data for ndx graphing: 
+##  Sam Clark's getUsaMortalityData-v0.1.R (https://github.com/sinafala/usa-mortality/blob/master/getUsaMortalityData-v0.1.R)
+##
+setwd("")
+##########
+##########
+
+#####Begin getUsaMortalityData-v0.1.R
+
 # getUsaMortalityData.R Version 0.1
 
 # Sam Clark
@@ -253,7 +264,7 @@ extractLtCol <- function (lts.list,sex,col.name) {
 }
 
 ###############
-# Example usage
+# Example usage - MODIFIED FROM HER BY EDDIEH - MOST EXAMPLES INFO REMOVED - TO JUST GET DATA FOR THE ndx GRAPHING PURPOSE
 ###############
 
 # WARNING: contents of the directory './example-data' in your working directory 
@@ -266,12 +277,12 @@ dir.create("./example-data")
 # download the usa mortality zip file 
 output.file <- "./example-data/USA-lifetables.zip"
 unzip.dir <- "./example-data"
-usa.user <- "<usa.mortality.org user name>"
-usa.pass <- "<usa.mortality.org password>"
+usa.user <- "" #"<usa.mortality.org user name>"
+usa.pass <- "" #"<usa.mortality.org password>"
 usa.lts.download <- download.usa(output.file,unzip.dir,usa.user,usa.pass)
 
-# parse the raw 1x1 (single year of age and single calendar year) life tables into a list
-age.period <- "1x1"
+# parse the raw 1x10 (single year of age and ten calendar year) life tables into a list
+age.period <- "1x10"
 data.dir <- "./example-data/lifetables"
 usa.lts <- readUsaLts(age.period,data.dir)
 # explore resulting list a little
@@ -286,65 +297,57 @@ names(lts)
 names(lts$States)
 names(lts$States$AK)
 names(lts$States$AK$b)
-names(lts$States$AK$b$per.1959)
-# finally a life table: Arkansas 1959, both sexes
-lts$States$AK$b$per.1959
-# California 2010, female
-lts$States$CA$f$per.2010
-# dimensions of California 2010, female
-dim(lts$States$CA$f$per.2010)
-# have a look at California 2010, female
-View(lts$States$AK$b$per.2015)
+names(lts$States$AK$b$per.1960)
 
-# extract the qx column from all the both-sex life tables and store them in a matrix
-qx.b <- extractLtCol(usa.lts,"b","qx")
-# have a look at the dimensions of the resulting matrix 
-dim(qx.b)
-# have a look at the first few columns
-View(qx.b[,1:5])
-# just USA national life tables
-area <- "USA"
-area.cols <- grepl(area,colnames(qx.b))
-qx.b.usa <- qx.b[,area.cols]
-colnames(qx.b.usa)
-dim(qx.b.usa)
-View(qx.b.usa)
-# just Ohio state life tables
-area <- "OH"
-area.cols <- grepl(area,colnames(qx.b))
-qx.b.oh <- qx.b[,area.cols]
-colnames(qx.b.oh)
-dim(qx.b.oh)
-View(qx.b.oh)
+#####End getUsaMortalityData-v0.1.R
 
-# another example: get female, 5-year, California life expectancies from 5-year age group life tables
-# parse 5x5 life tables
-age.period <- "5x5"
-data.dir <- "./example-data/lifetables"
-usa.lts.5x5 <- readUsaLts(age.period,data.dir)
-usa.lts.5x5$age
-usa.lts.5x5$lts.read
-# extract ex for f
-ex.f <- extractLtCol(usa.lts,"f","ex")
-dim(ex.f)
-# select California life expecancies
-area <- "CA"
-area.cols <- grepl(area,colnames(ex.f))
-e0.f.ca <- ex.f[1,area.cols]
-names(e0.f.ca)
-length(e0.f.ca)
-# plot California female e0s
-plot(e0.f.ca,xaxt="n")
-axis(1, at=seq(1,57,1),label=seq(1959,2015,1),las=2)
+##########
+##########
+##Graphing 10yr life table ndx data for Alaska
+##Data from the United States Mortality Database (usa.mortality.org)
+##
+##Eddie Hunsinger, January 2019
+##########
+##########
 
-# save the Ohio qxs in a file on disk
-save(qx.b.oh,file="./example-data/qxOh.rda")
-# read them 
-rm(list="qx.b.oh")
-load(file="./example-data/qxOh.rda")
+##Pyramid plots (Using Carl Mason's great pyramid function: https://lab.demog.berkeley.edu/Docs/Faq/faq/fq.shtml#SECTION00421000000000000000)
+##And also thanks to http://www.shizukalab.com/toolkits/overlapping-histograms
+poppyr3<-function(female,male,cat,dog){
+par(new=TRUE)
+split.screen(figs=rbind(c(0,.58,0,1),c(.43,1,0,1)))
+screen(1)
+barplot(female,horiz=T,names=cat,cex.names=.8,space=0,las=2,axes=FALSE,
+xlim=c(5000,0),col=dog)
+title("",line=-3,cex.main=1)
+screen(2)
+barplot(male,horiz=T,names=F,cex.names=.8,space=0,las=2,axes=FALSE,
+xlim=c(0,5000),col=dog)
+title("",line=-3,cex.main=1)
+close.screen(all=T)}
 
-# save the whole list of life tables
-save(usa.lts,file="./example-data/usaLtsList.rda")
-rm(list="usa.lts")
-load(file="./example-data/usaLtsList.rda")
-names(usa.lts)
+cat<-read.table(file="https://raw.githubusercontent.com/edyhsgr/DeathsDistributionGraphing/master/agelabels.csv",sep=",",header=TRUE)
+cat<-cat$x
+
+##1970s - I use 1x10 (age by years) data - called 1970 after selected
+female<-lts$States$AK$f$per.1970$dx
+male<-lts$States$AK$m$per.1970$dx
+dog<-rgb(1,1,0,0.35)
+poppyr3(female,male,cat,dog)
+
+female<-lts$States$AK$f$per.2000$dx
+male<-lts$States$AK$m$per.2000$dx
+dog<-rgb(0,1,1,0.35)
+poppyr3(female,male,cat,dog)
+
+mtext(side=3,line=1,text=expression("Period Life Table Deaths (" * ""[n] * d[x] *") by Sex, Alaska, 1970s and 2000s"),cex=1)
+mtext(side=3,line=.2,text="(From the United States Mortality Database - usa.mortality.org - January 2019.)",font=1,cex=.75)
+mtext(side=1,line=1,adj=.175,text=expression("Female"),font=1,cex=1)
+mtext(side=1,line=1,adj=.75,text=expression("Male"),font=1,cex=1)
+mtext(side=1,line=-24.5,adj=-.275,text="Age",font=1,cex=1)
+legend(0,.5, legend=c("2000s","Overlap","1970s"), col=c(rgb(0,1,1,0.35), 
+     rgb(1,1,0,0.35),rgb(1,1,0,0.35)), pt.cex=2, pch=15, cex=1, bty ="n", y.intersp=1.25)
+legend(0,.5, legend=c("","",""), col=c(rgb(1,1,0,0), 
+     rgb(0,1,1,0.35),rgb(0,1,1,0)), pt.cex=2, pch=15, cex=1, bty ="n", y.intersp=1.25)
+legend(0,.5, legend=c("","",""), col=c(rgb(0,0,0), 
+     rgb(0,0,0),rgb(0,0,0)), pt.cex=2, pch=0, cex=1, bty ="n", y.intersp=1.25)
+
