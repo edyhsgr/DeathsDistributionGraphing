@@ -6,7 +6,6 @@
 setwd("")
 ##########
 ##########
-
 #####Begin getUsaMortalityData-v0.1.R
 
 # getUsaMortalityData.R Version 0.1
@@ -264,7 +263,7 @@ extractLtCol <- function (lts.list,sex,col.name) {
 }
 
 ###############
-# Example usage - MODIFIED FROM HER BY EDDIEH - MOST EXAMPLES INFO REMOVED - TO JUST GET DATA FOR THE ndx GRAPHING PURPOSE
+# Example usage - MODIFIED FROM HERE BY EDDIEH - MOST EXAMPLES INFO REMOVED - TO JUST GET DATA FOR THE ndx GRAPHING PURPOSE
 ###############
 
 # WARNING: contents of the directory './example-data' in your working directory 
@@ -300,7 +299,6 @@ names(lts$States$AK$b)
 names(lts$States$AK$b$per.1960)
 
 #####End getUsaMortalityData-v0.1.R
-
 ##########
 ##########
 ##Graphing 10yr life table ndx data for Alaska
