@@ -1,8 +1,4 @@
-## Download and parse USA mortality data from [usa.mortality.org](usa.mortality.org)
-
-R code to
-* download ZIP file with all data from [usa.mortality.org](usa.mortality.org)
-* read and parse the desired life table type into an R list
-* extract a given column from all the sex-specific life tables and store them in a numeric matrix
-
-Code and examples in **getUsaMortalityData.R**
+##Temporary: Trying GitHub Fork of tool to download and import data for ndx graphing: 
+Modified Sam Clark's getUsaMortalityData-v0.1.R 
+(https://github.com/sinafala/usa-mortality/blob/master/getUsaMortalityData-v0.1.R)
+with graphing steps added at the end. 
